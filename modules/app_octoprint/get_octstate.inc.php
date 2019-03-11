@@ -1,7 +1,4 @@
 <?php
-		//echo date('Y-m-d H:i:s').'Run get_octstate.inc.php \r\n';
-		//$api_url = gg('oct_setting.api_url');
-		//$apiKey = gg('oct_setting.api_key');
 		$api_url = $this->config['API_URL'];
 		$apiKey = $this->config['API_KEY'];
 		
@@ -9,7 +6,6 @@
 		
 		while($ret<=3) {
 			$query = $api_url . "/api/job?apikey=" . $apiKey;
-			echo date('Y-m-d H:i:s').'Service query ' . $query . ' Retry: ' . $ret . ' \r\n';
 			$data =  getURL($query);		
 			$curOctoprint = json_decode($data);
 			if ($curOctoprint->cod == "404" || $curOctoprint->cod == "500") {
@@ -22,7 +18,6 @@
 		}
 		if ($err_msg){
 			DebMes('Octoprint: '.$err_msg);
-			echo date('Y-m-d H:i:s').'Service error ' . $err_msg . ' \r\n';
 			return;				
 		}
 

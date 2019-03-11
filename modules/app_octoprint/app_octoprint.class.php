@@ -117,17 +117,14 @@ function admin(&$out) {
   $out['API_URL']='http://';
  }
  $out['API_KEY']=$this->config['API_KEY'];
- $out['API_USERNAME']=$this->config['API_USERNAME'];
- $out['API_PASSWORD']=$this->config['API_PASSWORD'];
+ $out['SAY_FINAL']=$this->config['SAY_FINAL'];
  if ($this->view_mode=='update_settings') {
    global $api_url;
    $this->config['API_URL']=$api_url;
    global $api_key;
    $this->config['API_KEY']=$api_key;
-   global $api_username;
-   $this->config['API_USERNAME']=$api_username;
-   global $api_password;
-   $this->config['API_PASSWORD']=$api_password;
+   global $say_final;
+   $this->config['SAY_FINAL']=$say_final;
    $this->saveConfig();
    $this->redirect("?");
  }
