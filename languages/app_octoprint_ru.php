@@ -11,6 +11,7 @@ $dictionary = array(
 'OCT_SAY_FINAL' => 'Произносить текст по окончании печати',
 'OCT_TAB_STATUS' => 'Текущий статус',
 'OCT_TAB_SETTNG' => 'Настройки',
+'OCT_ASK_PERIOD' => 'Период между опросами сервера (сек)',
 
 
 /* end module names */

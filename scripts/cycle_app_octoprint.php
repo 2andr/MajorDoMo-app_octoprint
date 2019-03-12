@@ -20,7 +20,12 @@ $app_octoprint_module->getConfig();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $latest_check=0;
-$checkEvery=30; // poll every 5 seconds
+$ask_period = gg('oct_setting.ask_period');
+
+$checkEvery= ($ask_period ? $ask_period : 30); // poll every 30 seconds if ask_period isnan
+
+//echo date('Y-m-d H:i:s').' checkEvery = ' . $checkEvery . ' \r\n';
+
 while (1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);

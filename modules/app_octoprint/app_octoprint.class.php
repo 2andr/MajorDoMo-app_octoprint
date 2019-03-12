@@ -136,10 +136,12 @@ public function save_setting()
 	global $oct_api_url;
 	global $oct_api_key;
 	global $oct_say_final;
+	global $oct_ask_period;
 
 	if(isset($oct_api_url)) sg('oct_setting.api_url', $oct_api_url);
 	if(isset($oct_api_key)) sg('oct_setting.api_key', $oct_api_key);
 	if(isset($oct_say_final)) sg('oct_setting.say_final', $oct_say_final);
+	if(isset($oct_ask_period)) sg('oct_setting.ask_period', $oct_ask_period);
 
 /*
 	$this->config['API_URL']=$api_url;
@@ -156,6 +158,7 @@ public function get_setting(&$out)
 	$out["OCT_API_KEY"] = gg('oct_setting.api_key');
 	$out["OCT_API_URL"] = gg('oct_setting.api_url');
 	$out["OCT_SAY_FINAL"] = gg('oct_setting.say_final');
+	$out["OCT_ASK_PERIOD"] = gg('oct_setting.ask_period');
 
 /*
 	$this->getConfig();
@@ -189,7 +192,7 @@ function usual(&$out) {
  function processCycle() {
 	$this->getConfig();
     //echo date('Y-m-d H:i:s').'Required '. DIR_MODULES.$this->name . '/ get_octstate.inc.php \r\n';
-	require(DIR_MODULES.$this->name.'/get_octstate.inc.php');
+	require_once(DIR_MODULES.$this->name.'/get_octstate.inc.php');
   //to-do
  }
 /**

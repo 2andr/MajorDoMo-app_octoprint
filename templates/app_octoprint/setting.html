@@ -18,6 +18,12 @@
  <div class="controls"><input type="text" name="oct_api_key" value="[#OCT_API_KEY#]" class="input"></div>
 </div>
 <div class="form-group">
+ <label class="control-label"[#if ERR_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_ASK_PERIOD#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="oct_ask_period" value="[#OCT_ASK_PERIOD#]" class="input"></div>
+</div><div class="form-group">
  <label class="control-label"[#if ERR_SAY_FINAL#] style="color:red;font-weight:bold"[#endif#]>
  <#LANG_OCT_SAY_FINAL#>:
  (*)
