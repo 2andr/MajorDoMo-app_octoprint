@@ -9,8 +9,8 @@ $dictionary = array(
 'OCT_API_URL' => 'Адрес API',
 'OCT_API_KEY' => 'API ключ',
 'OCT_SAY_FINAL' => 'Произносить текст по окончании печати',
-'OCT_TAB_MAIN' => 'Основные настройки',
-'OCT_TAB_API' => 'Настройки API',
+'OCT_TAB_STATUS' => 'Текущий статус',
+'OCT_TAB_SETTNG' => 'Настройки',
 
 
 /* end module names */

@@ -111,23 +111,62 @@ function run() {
 * @access public
 */
 function admin(&$out) {
- $this->getConfig();
- $out['API_URL']=$this->config['API_URL'];
- if (!$out['API_URL']) {
-  $out['API_URL']='http://';
- }
- $out['API_KEY']=$this->config['API_KEY'];
- $out['SAY_FINAL']=$this->config['SAY_FINAL'];
- if ($this->view_mode=='update_settings') {
-   global $api_url;
-   $this->config['API_URL']=$api_url;
-   global $api_key;
-   $this->config['API_KEY']=$api_key;
-   global $say_final;
-   $this->config['SAY_FINAL']=$say_final;
-   $this->saveConfig();
-   $this->redirect("?");
- }
+	global $oct_subm;
+      
+	if($oct_subm == 'setting')
+	{
+		$this->save_setting();
+		$this->view_mode = "";
+	}
+	  
+	if($this->view_mode == '')
+	{
+
+}
+	else if($this->view_mode == 'setting')
+	{
+		$this->get_setting($out);
+	}
+
+}
+
+public function save_setting()
+{
+	$this->getConfig();
+	global $oct_api_url;
+	global $oct_api_key;
+	global $oct_say_final;
+
+	if(isset($oct_api_url)) sg('oct_setting.api_url', $oct_api_url);
+	if(isset($oct_api_key)) sg('oct_setting.api_key', $oct_api_key);
+	if(isset($oct_say_final)) sg('oct_setting.say_final', $oct_say_final);
+
+/*
+	$this->config['API_URL']=$api_url;
+	$this->config['API_KEY']=$api_key;
+	$this->config['SAY_FNAL']=$say_final;
+
+	$this->saveConfig();
+	$this->redirect("?");
+*/
+}
+
+public function get_setting(&$out)
+{
+	$out["OCT_API_KEY"] = gg('oct_setting.api_key');
+	$out["OCT_API_URL"] = gg('oct_setting.api_url');
+	$out["OCT_SAY_FINAL"] = gg('oct_setting.say_final');
+
+/*
+	$this->getConfig();
+	$out['API_URL']=$this->config['API_URL'];
+	if (!$out['API_URL']) {
+		$out['API_URL']='http://';
+	}
+	$out['API_KEY']=$this->config['API_KEY'];
+	$out['SAY_FNAL']=$this->config['SAY_FNAL'];
+	
+*/
 }
 /**
 * FrontEnd

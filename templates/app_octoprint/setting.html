@@ -1,0 +1,32 @@
+   
+<div  id='settings'>
+&nbsp;
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+<fieldset>
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_API_URL#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="oct_api_url" value="[#OCT_API_URL#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
+  <#LANG_OCT_API_KEY#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="oct_api_key" value="[#OCT_API_KEY#]" class="input"></div>
+</div>
+<div class="form-group">
+ <label class="control-label"[#if ERR_SAY_FINAL#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_SAY_FINAL#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="oct_say_final" value="[#OCT_SAY_FINAL#]" class="input"></div>
+</div>
+<div class="form-actions">
+<button type="submit" name="oct_subm" value="setting" class="btn btn-primary"><#LANG_UPDATE#></button>
+</div>
+</fieldset>
+</form>
+</div>
