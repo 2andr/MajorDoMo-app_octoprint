@@ -22,7 +22,7 @@ echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $latest_check=0;
 $ask_period = gg('oct_setting.ask_period');
 
-$checkEvery= ($ask_period ? $ask_period : 30); // poll every 30 seconds if ask_period isnan
+$checkEvery= ($ask_period ? (int)$ask_period : 30); // poll every 30 seconds if ask_period isnan
 
 //echo date('Y-m-d H:i:s').' checkEvery = ' . $checkEvery . ' \r\n';
 

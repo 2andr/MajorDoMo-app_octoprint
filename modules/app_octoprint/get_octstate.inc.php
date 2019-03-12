@@ -4,7 +4,7 @@ $apiKey = $this->config['API_KEY'];
 
 if (!isset($api_url) && !isset($apiKey) ) return null;
 
-while($ret<=3) {
+while($ret<=1) {
 	$query = $api_url . "/api/job?apikey=" . $apiKey;
 	$data =  getURL($query);		
 	$curOctoprint = json_decode($data);
@@ -25,15 +25,6 @@ $curOctoprint = json_decode($data, true);
 if($curOctoprint!=false && !empty($curOctoprint)) {
 	//echo date('Y-m-d H:i:s').'Service answered \r\n';
 	recursive( $curOctoprint ,'oct_status.');
-	/*
-	$job = $curOctoprint->job;
-	$progress = $curOctoprint->job;
-	sg('oct_status.state', $curOctoprint->state);
-	sg('oct_status.file', $job->file->display);
-	sg('oct_status.completion', $progress->completion);
-	sg('oct_status.printTime', $progress->printTime);
-	sg('oct_status.printTimeLeft', $progress->printTimeLeft);
-	*/
 }
 
 function recursive( $arr, $string )
