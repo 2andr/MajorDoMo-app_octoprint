@@ -24,14 +24,14 @@ $ask_period = gg('oct_setting.ask_period');
 
 $checkEvery= ($ask_period ? (int)$ask_period : 30); // poll every 30 seconds if ask_period isnan
 
-//echo date('Y-m-d H:i:s').' checkEvery = ' . $checkEvery . ' \r\n';
+//echo date('Y-m-d H:i:s').' checkEvery = ' . $checkEvery . PHP_EOL;
 
 while (1)
 {
    setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
    if ((time()-$latest_check)>$checkEvery) {
     $latest_check=time();
-    //echo date('Y-m-d H:i:s').' Polling octoprint processCycle... \r\n';
+    //echo date('Y-m-d H:i:s').' Polling octoprint processCycle...'. PHP_EOL;
     $app_octoprint_module->processCycle();
    }
    if (file_exists('./reboot') || IsSet($_GET['onetime']))

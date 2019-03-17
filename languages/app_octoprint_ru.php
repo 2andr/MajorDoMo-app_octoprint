@@ -12,6 +12,7 @@ $dictionary = array(
 'OCT_TAB_STATUS' => 'Текущий статус',
 'OCT_TAB_SETTNG' => 'Настройки',
 'OCT_ASK_PERIOD' => 'Период между опросами сервера (сек)',
+'OCT_PRINTER_STATUS' => 'Текущий статус принтера',
 
 
 /* end module names */

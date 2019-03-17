@@ -1,10 +1,10 @@
 <?php
-$api_url = $this->config['API_URL'];
-$apiKey = $this->config['API_KEY'];
+$apiKey = gg('oct_setting.api_key');
+$api_url = gg('oct_setting.api_url');
 
 if (!isset($api_url) && !isset($apiKey) ) return null;
 
-while($ret<=1) {
+while($ret<=3) {
 	$query = $api_url . "/api/job?apikey=" . $apiKey;
 	$data =  getURL($query);		
 	$curOctoprint = json_decode($data);
@@ -22,13 +22,11 @@ if ($err_msg){
 }
 $curOctoprint = json_decode($data, true);
 
-if($curOctoprint!=false && !empty($curOctoprint)) {
-	//echo date('Y-m-d H:i:s').'Service answered \r\n';
-	recursive( $curOctoprint ,'oct_status.');
-}
-
 function recursive( $arr, $string )
 {
+	$octObjectName = "oct_status.";
+	$saveHistory = [ "state", "progress_printTimeLeft", "progress_completion" ];
+	
 	foreach ($arr as $key => $value )
 	{
 		if(is_array($value)){
@@ -36,12 +34,32 @@ function recursive( $arr, $string )
 			recursive( $value, $string.$key.'_' );
 		} else{
 			//It is not an array, so print it out.
-			//echo date('Y-m-d H:i:s').'string: ' . $string.$key .' value:'.$value.' \r\n';
-			sg( $string.$key, $value );
+			$string.$key;
+			
+			echo date('Y-m-d H:i:s').'string: ' . $string.$key .' value:'.$value.PHP_EOL;
+			if ( in_array( $string.$key, $saveHistory) )
+			{
+				echo date('Y-m-d H:i:s').' in array: ' . $string.$key .PHP_EOL;
+				$_prevValue = gg($octObjectName.$string.$key);
+				if ( $_prevValue != $value )
+				{
+					sg( $octObjectName.$string.$key, $value );
+				}
+			}
+			else
+			{
+				sg( $octObjectName.$string.$key, $value );
+			}
 		}
 		
 	}
 	
 }	
+
+if($curOctoprint!=false && !empty($curOctoprint)) {
+	//echo date('Y-m-d H:i:s').'Service answered'.PHP_EOL;
+	recursive( $curOctoprint ,'');
+}
+
 ?>
 
