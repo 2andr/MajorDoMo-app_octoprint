@@ -9,6 +9,10 @@
 //
 //
 class app_octoprint extends module {
+	public $name;
+	public $title;
+	protected $mainClass;
+	protected $subClass;
 /**
 * app_octoprint
 *
@@ -21,6 +25,8 @@ function __construct() {
   $this->title="Octoprint";
   $this->module_category="<#LANG_SECTION_APPLICATIONS#>";
   $this->checkInstalled();
+  $this->mainClass="octoprint";
+  $this->subClass="oct_status";
 }
 /**
 * saveParams
@@ -132,44 +138,27 @@ function admin(&$out) {
 
 public function save_setting()
 {
-	$this->getConfig();
+	//$this->getConfig();
 	global $oct_api_url;
 	global $oct_api_key;
-	global $oct_say_final;
+	global $oct_hist_period;
 	global $oct_ask_period;
 
 	if(isset($oct_api_url)) sg('oct_setting.api_url', $oct_api_url);
 	if(isset($oct_api_key)) sg('oct_setting.api_key', $oct_api_key);
-	if(isset($oct_say_final)) sg('oct_setting.say_final', $oct_say_final);
+	if(isset($oct_hist_period)) sg('oct_setting.hist_period', $oct_hist_period);
 	if(isset($oct_ask_period)) sg('oct_setting.ask_period', $oct_ask_period);
 
-/*
-	$this->config['API_URL']=$api_url;
-	$this->config['API_KEY']=$api_key;
-	$this->config['SAY_FNAL']=$say_final;
-
-	$this->saveConfig();
-	$this->redirect("?");
-*/
 }
 
 public function get_setting(&$out)
 {
 	$out["OCT_API_KEY"] = gg('oct_setting.api_key');
 	$out["OCT_API_URL"] = gg('oct_setting.api_url');
-	$out["OCT_SAY_FINAL"] = gg('oct_setting.say_final');
+	$out["OCT_HIST_PERIOD"] = gg('oct_setting.hist_period');
 	$out["OCT_ASK_PERIOD"] = gg('oct_setting.ask_period');
 
-/*
-	$this->getConfig();
-	$out['API_URL']=$this->config['API_URL'];
-	if (!$out['API_URL']) {
-		$out['API_URL']='http://';
-	}
-	$out['API_KEY']=$this->config['API_KEY'];
-	$out['SAY_FNAL']=$this->config['SAY_FNAL'];
-	
-*/
+
 }
 /**
 * FrontEnd
@@ -181,6 +170,7 @@ public function get_setting(&$out)
 function usual(&$out) {
  $this->admin($out);
 }
+ 
  function processSubscription($event, $details='') {
  $this->getConfig();
   if ($event=='SAY') {
@@ -189,9 +179,12 @@ function usual(&$out) {
    //...
   }
  }
+ 
  function processCycle() {
-	$this->getConfig();
-    //echo date('Y-m-d H:i:s').'Required '. DIR_MODULES.$this->name . '/ get_octstate.inc.php \r\n';
+	//$this->getConfig();
+	$mainClass = $this->mainClass;
+	$subClass = $this->subClass;
+    //echo date('Y-m-d H:i:s').' $this subClass =  '. $this->subClass .' mainClass =  '. $this->mainClass .PHP_EOL;
 	require_once(DIR_MODULES.$this->name.'/get_octstate.inc.php');
   //to-do
  }
@@ -203,34 +196,19 @@ function usual(&$out) {
 * @access private
 */
  function install($data='') {
-  subscribeToEvent($this->name, 'SAY');
-      $className = 'octoprint';
-      $objectName = array('oct_status', 'oct_setting');
-      $objDescription = array('Текущий статус', 'Настройки');
-       $rec = SQLSelectOne("SELECT ID FROM classes WHERE TITLE LIKE '" . DBSafe($className) . "'");
-      
-      if (!$rec['ID'])
-      {
-         $rec = array();
-         $rec['TITLE'] = $className;
-         $rec['DESCRIPTION'] = 'Статус Octoprint - сервера 3Д печати';
-         $rec['ID'] = SQLInsert('classes', $rec);
-      }
-       for ($i = 0; $i < count($objectName); $i++)
-      {
-         $obj_rec = SQLSelectOne("SELECT ID FROM objects WHERE CLASS_ID='" . $rec['ID'] . "' AND TITLE LIKE '" . DBSafe($objectName[$i]) . "'");
-         
-         if (!$obj_rec['ID'])
-         {
-            $obj_rec = array();
-            $obj_rec['CLASS_ID'] = $rec['ID'];
-            $obj_rec['TITLE'] = $objectName[$i];
-            $obj_rec['DESCRIPTION'] = $objDescription[$i];
-            $obj_rec['ID'] = SQLInsert('objects', $obj_rec);
-         }
-      }
-   parent::install();
- }
+	subscribeToEvent($this->name, 'SAY');
+	$objectName = array('oct_setting');
+	$mainClass = 'octoprint';
+	$subClass = 'oct_status';
+	$mainClassId = addClass( $mainClass );
+	$subClassId = addClass( $subClass, $mainClass );
+	
+	for ($i = 0; $i < count($objectName); $i++)
+	{
+		addClassObject( $mainClass, $objectName[$i] );
+	}
+	parent::install();
+}
 // --------------------------------------------------------------------
 
    public function uninstall()

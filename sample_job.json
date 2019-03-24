@@ -1,0 +1,30 @@
+{
+  "job": {
+    "averagePrintTime": 2927.2319719791412, 
+    "estimatedPrintTime": 2542.327134047438, 
+    "filament": {
+      "tool0": {
+        "length": 607.302430000003, 
+        "volume": 0.0
+      }
+    }, 
+    "file": {
+      "date": 1552412462, 
+      "display": "\u0417\u0430\u0449\u0438\u0442\u0430\u041f\u043e\u0434\u041e\u0431\u044a\u0435\u043a\u0442\u0438\u0432.gcode", 
+      "name": "ZashchitaPodObektiv.gcode", 
+      "origin": "local", 
+      "path": "temp/ZashchitaPodObektiv.gcode", 
+      "size": 1232674
+    }, 
+    "lastPrintTime": 2927.2319719791412, 
+    "user": "sandr"
+  }, 
+  "progress": {
+    "completion": 100.0, 
+    "filepos": 1232674, 
+    "printTime": 2927, 
+    "printTimeLeft": 0, 
+    "printTimeLeftOrigin": null
+  }, 
+  "state": "Operational"
+}

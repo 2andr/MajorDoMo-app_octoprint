@@ -1,6 +1,8 @@
 <?php
 $apiKey = gg('oct_setting.api_key');
 $api_url = gg('oct_setting.api_url');
+//$oct_class = addClass('octoprint');
+//addClassObject($class, "testClass");
 
 if (!isset($api_url) && !isset($apiKey) ) return null;
 
@@ -24,8 +26,11 @@ $curOctoprint = json_decode($data, true);
 
 function recursive( $arr, $string )
 {
-	$octObjectName = "oct_status.";
+	$subClass = 'oct_status';
+	//echo date('Y-m-d H:i:s').' subClass = ' . $subClass . PHP_EOL;
 	$saveHistory = [ "state", "progress_printTimeLeft", "progress_completion" ];
+	$histPeriod = gg('oct_setting.hist_period') ? gg('oct_setting.hist_period') : 0 ;
+	$objectNamePrefix = "oct_";
 	
 	foreach ($arr as $key => $value )
 	{
@@ -36,19 +41,27 @@ function recursive( $arr, $string )
 			//It is not an array, so print it out.
 			$string.$key;
 			
-			echo date('Y-m-d H:i:s').'string: ' . $string.$key .' value:'.$value.PHP_EOL;
 			if ( in_array( $string.$key, $saveHistory) )
 			{
-				echo date('Y-m-d H:i:s').' in array: ' . $string.$key .PHP_EOL;
-				$_prevValue = gg($octObjectName.$string.$key);
-				if ( $_prevValue != $value )
+				$_objName = $string.$key;
+				//echo date('Y-m-d H:i:s').' in array: ' . $_objName .PHP_EOL;
+				
+				$_obj = gg($_objName);
+				echo date('Y-m-d H:i:s').' gg: ' . $_objName .' res:'. $_obj .PHP_EOL;
+
+				if ( !$_obj )
 				{
-					sg( $octObjectName.$string.$key, $value );
+					echo date('Y-m-d H:i:s').' addClass: ' . $_objName .PHP_EOL;
+					addClassProperty($subClass, $_objName, $histPeriod);
 				}
+				sg( $subClass.".".$_objName, $value );
+				
+				
 			}
 			else
 			{
-				sg( $octObjectName.$string.$key, $value );
+				addClassProperty($subClass, $_objName, 0);
+				sg( $subClass.".".$_objName, $value );
 			}
 		}
 		

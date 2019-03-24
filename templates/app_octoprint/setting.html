@@ -24,11 +24,10 @@
  </label>
  <div class="controls"><input type="text" name="oct_ask_period" value="[#OCT_ASK_PERIOD#]" class="input"></div>
 </div><div class="form-group">
- <label class="control-label"[#if ERR_SAY_FINAL#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_OCT_SAY_FINAL#>:
- (*)
+ <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_HIST_PERIOD#>:
  </label>
- <div class="controls"><input type="text" name="oct_say_final" value="[#OCT_SAY_FINAL#]" class="input"></div>
+ <div class="controls"><input type="text" name="oct_hist_period" value="[#OCT_HIST_PERIOD#]" class="input"></div>
 </div>
 <div class="form-actions">
 <button type="submit" name="oct_subm" value="setting" class="btn btn-primary"><#LANG_UPDATE#></button>
