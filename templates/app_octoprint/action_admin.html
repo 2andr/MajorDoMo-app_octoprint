@@ -1,15 +1,32 @@
-<h4><#LANG_OCT_APP_NAME#></h4>
-<ul class="nav nav-tabs">     
-   <li [#if VIEW_MODE="" #] class="active" [#endif#]><a href="?view_mode="><span class="glyphicon glyphicon-info-sign"></span> <#LANG_OCT_TAB_STATUS#></a></li>
-   <li [#if VIEW_MODE="setting" #] class="active" [#endif#]><a href="?view_mode=setting"><span class="glyphicon glyphicon-cog"></span> <#LANG_OCT_TAB_SETTNG#></a></li>
+<!-- action usual -->
+[#if DATA_SOURCE="octoprint" || DATA_SOURCE=""#]
+	[#if VIEW_MODE="printers" || VIEW_MODE=""#]
+		[#inc main.html#]
+	[#endif VIEW_MODE#]
 
-</ul>
-<br />
-[#if VIEW_MODE=""#]
-   [#inc status.html#]
-[#endif VIEW_MODE#]
-
-[#if VIEW_MODE="setting"#]
-   [#inc setting.html#]
-[#endif VIEW_MODE#]
-
+	<!-- table prn edit -->
+	[#if VIEW_MODE="prn_edit"#]
+		<p align=center>
+		<a href="?">&lt;&lt;&lt; <#LANG_BACK#></a>
+		</p>  
+		[#if ID!=""#]
+			[#if TITLE!=""#]<h4>[#TITLE#]</h4>[#endif TITLE#]
+			<ul class="nav nav-tabs">
+			<li[#if TAB=""#] class="active"[#endif#]>
+			<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab="><#LANG_GENERAL#></a>
+			</li>
+			<li[#if TAB="sensors"#] class="active"[#endif#]>
+			<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=sensors"><#LANG_GENERAL_SENSORS#></a>
+			</li>
+			<li[#if TAB="presentation"#] class="active"[#endif#]>
+			<a href="?data_source=<#DATA_SOURCE#>&view_mode=<#VIEW_MODE#>&id=<#ID#>&tab=presentation"><#LANG_PRESENTATION#></a>
+			</li>
+			</ul>
+		[#endif ID#]   
+		
+		[#if TAB=""#]
+			[#inc edit_prn.html#]
+		[#endif TAB=""#]
+ 	[#endif VIEW_MODE#] 
+	<!-- / table prn edit -->    
+[#endif DATA_SOURCE#]

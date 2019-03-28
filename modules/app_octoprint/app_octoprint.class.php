@@ -11,8 +11,7 @@
 class app_octoprint extends module {
 	public $name;
 	public $title;
-	protected $mainClass;
-	protected $subClass;
+	public $class_name;
 /**
 * app_octoprint
 *
@@ -21,12 +20,11 @@ class app_octoprint extends module {
 * @access private
 */
 function __construct() {
-  $this->name="app_octoprint";
-  $this->title="Octoprint";
-  $this->module_category="<#LANG_SECTION_APPLICATIONS#>";
+  $this->name = "app_octoprint";
+  $this->title = "Octoprint";
+  $this->class_name = "octoprint";
+  $this->module_category = "<#LANG_SECTION_APPLICATIONS#>";
   $this->checkInstalled();
-  $this->mainClass="octoprint";
-  $this->subClass="oct_status";
 }
 /**
 * saveParams
@@ -119,47 +117,127 @@ function run() {
 function admin(&$out) {
 	global $oct_subm;
       
-	if($oct_subm == 'setting')
+	if($this->view_mode == ''  || $this->view_mode == 'priters')
 	{
-		$this->save_setting();
-		$this->view_mode = "";
+		$this->printers( $out );
 	}
-	  
-	if($this->view_mode == '')
+	
+	if($this->view_mode == 'prn_edit')
 	{
-
-}
-	else if($this->view_mode == 'setting')
-	{
-		$this->get_setting($out);
+		$this->edit_prn( $out, $this->id);
 	}
-
+	
+	if ($this->view_mode == 'prn_delete') {
+		deleteObject( $this->id );
+		$this->redirect( "?" );
+	}
 }
 
-public function save_setting()
-{
-	//$this->getConfig();
-	global $oct_api_url;
-	global $oct_api_key;
-	global $oct_hist_period;
-	global $oct_ask_period;
+function printers(&$out) {
 
-	if(isset($oct_api_url)) sg('oct_setting.api_url', $oct_api_url);
-	if(isset($oct_api_key)) sg('oct_setting.api_key', $oct_api_key);
-	if(isset($oct_hist_period)) sg('oct_setting.hist_period', $oct_hist_period);
-	if(isset($oct_ask_period)) sg('oct_setting.ask_period', $oct_ask_period);
+	$res = getObjectsByClass($this->class_name);
 
+    //colorizeArray($res);
+    $total=count($res);
+    for($i=0;$i<$total;$i++) {
+	
+		// some action for every record if required		 
+		if ($res[$i]['ID']){
+			$title = $res[$i]['TITLE'];
+			$res[$i]["NAME"] = gg($title.'.NAME');
+			$res[$i]["API_URL"] = gg($title.'.API_URL');
+			$res[$i]["STATE"] = gg($title.'.state');
+		}
+    }
+    $out['RESULT']=$res;
 }
 
-public function get_setting(&$out)
-{
-	$out["OCT_API_KEY"] = gg('oct_setting.api_key');
-	$out["OCT_API_URL"] = gg('oct_setting.api_url');
-	$out["OCT_HIST_PERIOD"] = gg('oct_setting.hist_period');
-	$out["OCT_ASK_PERIOD"] = gg('oct_setting.ask_period');
 
+function edit_prn(&$out, $id){
+	if ($this->mode == "" ){
+		if($id){
+			$object_rec=SQLSelectOne("SELECT * FROM objects WHERE ID=".(int)$id);
+			$title = $object_rec['TITLE'];
+			$out["NAME"] = gg($title.'.NAME');
+			$out["TITLE"] = $title;
+			$out["API_KEY"] = gg($title.'.api_key');
+			$out["API_URL"] = gg($title.'.api_url');
+			$out["HIST_PERIOD"] = gg($title.'.hist_period');
+			$out["ASK_PERIOD"] = gg($title.'.ask_period');
+		}	
+	}
+	else if ($this->mode=='update') { 
+		$ok=1;
+		if ($this->tab=='') {
 
+			// API_URL
+			global $api_url;
+			$rec['api_url']=$api_url;
+			if ($rec['api_url']=='') {
+				$out['ERR_API_URL']=1;
+				$ok=0;
+			}
+
+			// API_KEY
+			global $api_key;    
+			$rec['API_KEY']=$api_key;
+			if ($rec['API_KEY']=='') {
+				$out['ERR_API_KEY']=1;
+				$ok=0;
+			}
+
+			// Title
+			global $title;
+			$rec['TITLE']=$title;
+			if ($rec['TITLE']=='') {
+				$out['ERR_TITLE']=1;
+				$ok=0;
+			}
+
+			// Sys_name
+			global $name;
+			$rec['NAME']=$name;
+			if ($rec['NAME']=='') {
+				$out['ERR_NAME']=1;
+				$ok=0;
+			}
+
+			// ASK_PERIOD
+			global $ask_period;
+			$rec['ASK_PERIOD']=$ask_period;
+			if ($rec['ASK_PERIOD']=='') {
+				$out['ERR_ASK_PERIOD']=1;
+				$ok=0;
+			}
+
+			// HIST_PERIOD
+			global $hist_period;
+			$rec['HIST_PERIOD']=$hist_period;
+			if ($rec['HIST_PERIOD']=='') {
+				$out['ERR_HIST_PERIOD']=1;
+				$ok=0;
+			}
+
+			//UPDATING RECORD
+			if ($ok) {
+				$name = $rec['NAME'];
+				if (!$id) {
+					addClassObject($this->class_name, $title, $system='');
+				}
+				foreach($rec as $key => $value) {
+					sg( $title.'.'.$key , $value ); 
+				}
+				$out['view_mode'] = 'printers';
+				$out['OK']=1;
+			} else {
+				$out['ERR']=1;
+			}
+		}
+
+	}
 }
+
+
 /**
 * FrontEnd
 *
@@ -182,9 +260,8 @@ function usual(&$out) {
  
  function processCycle() {
 	//$this->getConfig();
-	$mainClass = $this->mainClass;
-	$subClass = $this->subClass;
-    //echo date('Y-m-d H:i:s').' $this subClass =  '. $this->subClass .' mainClass =  '. $this->mainClass .PHP_EOL;
+	$class_name = $this->class_name;
+    //echo date('Y-m-d H:i:s').' $this subClass =  '. $this->subClass .' class_name =  '. $this->class_name .PHP_EOL;
 	require_once(DIR_MODULES.$this->name.'/get_octstate.inc.php');
   //to-do
  }
@@ -197,16 +274,7 @@ function usual(&$out) {
 */
  function install($data='') {
 	subscribeToEvent($this->name, 'SAY');
-	$objectName = array('oct_setting');
-	$mainClass = 'octoprint';
-	$subClass = 'oct_status';
-	$mainClassId = addClass( $mainClass );
-	$subClassId = addClass( $subClass, $mainClass );
-	
-	for ($i = 0; $i < count($objectName); $i++)
-	{
-		addClassObject( $mainClass, $objectName[$i] );
-	}
+	addClass( $this->class_name );
 	parent::install();
 }
 // --------------------------------------------------------------------

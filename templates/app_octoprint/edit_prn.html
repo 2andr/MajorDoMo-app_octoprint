@@ -1,0 +1,73 @@
+<div class="col-sm-10" id="main-content">
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#endif OK#]
+[#if ERR#]
+<div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
+[#endif ERR#]
+<fieldset>
+[#if ID=""#]
+<legend><#LANG_NEW_RECORD#></legend>
+[#endif ID#]
+<!-- NAME (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
+ <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control input"></div>
+</div>
+<!-- TITLE (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_TITLE#> (a-zA-Z0-9):</label>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
+</div>
+<!-- API_URL (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_API_URL#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="api_url" value="[#API_URL#]" class="input"></div>
+</div>
+<!-- API_KEY (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
+  <#LANG_OCT_API_KEY#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="api_key" value="[#API_KEY#]" class="input"></div>
+</div>
+<!-- ASK_PERIOD (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_OCT_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_ASK_PERIOD#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="ask_period" value="[#ASK_PERIOD#]" class="input"></div>
+</div>
+<!-- HIST_PERIOD (int(10)) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_HIST_PERIOD#>:
+ </label>
+ <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
+</div>
+
+
+<div class="form-actions">
+ [#if ID!=""#]
+ <button type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-defaul btn-primary"><#LANG_SUBMIT#></button>
+ [#else ID#]
+ <button type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-defaul btn-primary"><#LANG_ADD#></button>
+ [#endif ID#]
+<a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+<input type="hidden" name="id" value="<#ID#>">
+<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+<input type="hidden" name="mode" value="update">
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="tab" value="<#TAB#>">
+ 
+</div>
+</fieldset>
+</form>
+</div>

@@ -6,6 +6,7 @@
 $dictionary = array(
 /* general */
 'OCT_APP_NAME'=>'Модуль связи с сервером 3D печати - OCTOPRINT ',
+'OCT_TITLE' => 'Системное имя',
 'OCT_API_URL' => 'Адрес API',
 'OCT_API_KEY' => 'API ключ',
 'OCT_HIST_PERIOD' => 'Срок хранения истории (дней)',
@@ -13,6 +14,8 @@ $dictionary = array(
 'OCT_TAB_SETTNG' => 'Настройки',
 'OCT_ASK_PERIOD' => 'Период между опросами сервера (сек)',
 'OCT_PRINTER_STATUS' => 'Текущий статус принтера',
+'OCT_STATE' => 'Статус принтера',
+'OCT_FILE' => 'Файл',
 
 
 /* end module names */

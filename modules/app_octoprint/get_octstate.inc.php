@@ -1,78 +1,72 @@
 <?php
-$apiKey = gg('oct_setting.api_key');
-$api_url = gg('oct_setting.api_url');
-//$oct_class = addClass('octoprint');
-//addClassObject($class, "testClass");
+$printers = getObjectsByClass($class_name);
 
-if (!isset($api_url) && !isset($apiKey) ) return null;
+foreach ( $printers as $value ){
+	$title = $value['TITLE'];
+	$apiKey = gg( $title.'.API_KEY' );
+	$api_url = gg( $title.'.API_URL' );
+	echo date('Y-m-d H:i:s').' apiKey: '. $apiKey .PHP_EOL;
 
-while($ret<=3) {
-	$query = $api_url . "/api/job?apikey=" . $apiKey;
-	$data =  getURL($query);		
-	$curOctoprint = json_decode($data);
-	if ($curOctoprint->cod == "404" || $curOctoprint->cod == "500") {
-		$err_msg=$curOctoprint->message;	
-	} else {
-		$err_msg='';
-		$ret=3;
+	if ( !$api_url && !$apiKey && !$title ) continue;
+
+	while($ret <= 3) {
+		$query = $api_url . "/api/job?apikey=" . $apiKey;
+		$data =  getURL($query);		
+		$result = json_decode($data);
+		if ($result->cod == "404" || $result->cod == "500") {
+			$err_msg=$result->message;	
+		} else {
+			$err_msg= '' ;
+			$ret = 3;
+		}
+		$ret++;
 	}
-	$ret++;
-}
-if ($err_msg){
-	DebMes('Octoprint: '.$err_msg);
-	return;				
-}
-$curOctoprint = json_decode($data, true);
+	
+	if ($err_msg){
+		DebMes('Octoprint: '.$err_msg);
+		continue;				
+	}
+	
+	$result = json_decode($data, true);
 
-function recursive( $arr, $string )
+	if($result!=false && !empty($result)) {
+		//echo date('Y-m-d H:i:s').'Service answered'.PHP_EOL;
+		recursive( $class_name, $result , $title,'');
+	}
+
+}
+
+function recursive( $class_name, $arr, $title, $string )
 {
-	$subClass = 'oct_status';
-	//echo date('Y-m-d H:i:s').' subClass = ' . $subClass . PHP_EOL;
+
 	$saveHistory = [ "state", "progress_printTimeLeft", "progress_completion" ];
-	$histPeriod = gg('oct_setting.hist_period') ? gg('oct_setting.hist_period') : 0 ;
-	$objectNamePrefix = "oct_";
+	$histPeriod = gg( $title.'.hist_period') ? gg( $title.'.hist_period' ) : 0 ;
 	
 	foreach ($arr as $key => $value )
 	{
 		if(is_array($value)){
 			//We need to loop through it.
-			recursive( $value, $string.$key.'_' );
+			recursive( $class_name, $value, $title, $string.$key.'_' );
 		} else{
 			//It is not an array, so print it out.
-			$string.$key;
 			
 			if ( in_array( $string.$key, $saveHistory) )
 			{
-				$_objName = $string.$key;
-				//echo date('Y-m-d H:i:s').' in array: ' . $_objName .PHP_EOL;
-				
-				$_obj = gg($_objName);
-				echo date('Y-m-d H:i:s').' gg: ' . $_objName .' res:'. $_obj .PHP_EOL;
-
-				if ( !$_obj )
-				{
-					echo date('Y-m-d H:i:s').' addClass: ' . $_objName .PHP_EOL;
-					addClassProperty($subClass, $_objName, $histPeriod);
-				}
-				sg( $subClass.".".$_objName, $value );
-				
+		
+				addClassProperty($class_name, $string.$key, $histPeriod);
+				sg( $title.".".$string.$key, $value );
 				
 			}
 			else
 			{
-				addClassProperty($subClass, $_objName, 0);
-				sg( $subClass.".".$_objName, $value );
+				addClassProperty($class_name, $string.$key, 0);
+				sg( $title.".".$string.$key, $value );
 			}
 		}
 		
 	}
 	
 }	
-
-if($curOctoprint!=false && !empty($curOctoprint)) {
-	//echo date('Y-m-d H:i:s').'Service answered'.PHP_EOL;
-	recursive( $curOctoprint ,'');
-}
 
 ?>
 

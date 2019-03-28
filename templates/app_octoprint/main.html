@@ -1,0 +1,69 @@
+<!--<link rel="stylesheet" href="/3rdparty/font-awesome-4.7.0/css/font-awesome.min.css">-->
+<link rel="stylesheet" href="/3rdparty/fontawesome/css/all.min.css">
+<br/>
+
+<form action="?" method="get" name="frmFilter">
+<table border="0">
+ <tr>
+  <td>
+	<a href="?view_mode=prn_edit" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i> <#LANG_ADD_NEW_RECORD#></a>
+	</td>	
+ </tr>
+</table>
+</form>
+
+<form action="?" method="post" name="frmList_mysensor" style="padding:0px" class="form">
+<table   class="table table-stripped">
+<thead>
+<tr>
+<th><#LANG_NAME#></th>
+<th><#LANG_OCT_TITLE#></th>
+<th><#LANG_OCT_STATE#></th>
+<th><#LANG_OCT_FILE#></th>
+<th>&nbsp;</th>
+</tr>
+</thead>
+<tbody>
+[#begin RESULT#]
+<tr class="hover_btn2">
+ <td>
+  [#if NAME!=""#]
+   [#NAME#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td><a href="?view_mode=prn_edit&id=[#ID#]">
+  [#if TITLE!=""#]
+   [#TITLE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </a></td>
+ <td>
+  [#if STATE!=""#]
+   [#STATE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td>
+  [#if FILE!=""#]
+   [#FILE#]
+  [#else#]
+   &nbsp;
+  [#endif#]
+ </td>
+ <td width="1%" nowrap>
+  [#if "<#ACTION#>"=="admin"#]	
+    <a href="?view_mode=prn_edit&id=[#ID#]" class="btn btn-default btn-sm" title="<#LANG_EDIT#>"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a href="?view_mode=prn_delete&id=[#ID#]" onClick="return confirm('<#ARE_YOU_SURE#>')" class="btn btn-default btn-sm" title="<#LANG_DELETE#>"><i class="glyphicon glyphicon-remove"></i></a>
+  [#endif ACTION#]
+ </td>
+</tr>
+[#end RESULT#]
+</tbody>
+</table>
+<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+<input type="hidden" name="view_mode" value="multiple_mysensor">
+</form>
