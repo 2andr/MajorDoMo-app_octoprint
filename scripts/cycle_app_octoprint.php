@@ -20,25 +20,22 @@ $app_octoprint_module->getConfig();
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
 $latest_check=0;
-$ask_period = gg('oct_setting.ask_period');
 
-$checkEvery= ($ask_period ? (int)$ask_period : 30); // poll every 30 seconds if ask_period isnan
-
-//echo date('Y-m-d H:i:s').' checkEvery = ' . $checkEvery . PHP_EOL;
+$checkEvery= 30; // poll every 30 seconds if ask_period isnan
 
 while (1)
 {
-   setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
-   if ((time()-$latest_check)>$checkEvery) {
-    $latest_check=time();
-    //echo date('Y-m-d H:i:s').' Polling octoprint processCycle...'. PHP_EOL;
-    $app_octoprint_module->processCycle();
-   }
-   if (file_exists('./reboot') || IsSet($_GET['onetime']))
-   {
-      $db->Disconnect();
-      exit;
-   }
-   sleep(1);
+	setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
+	if ((time()-$latest_check)>$checkEvery) {
+		$latest_check=time();
+		echo date('Y-m-d H:i:s').' Polling octoprint processCycle...'. PHP_EOL;
+		$app_octoprint_module->processCycle();
+	}
+	if (file_exists('./reboot') || IsSet($_GET['onetime']))
+	{
+		$db->Disconnect();
+		exit;
+	}
+	sleep(1);
 }
 DebMes("Unexpected close of cycle: " . basename(__FILE__));

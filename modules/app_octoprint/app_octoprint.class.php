@@ -227,9 +227,12 @@ function edit_prn(&$out, $id){
 				foreach($rec as $key => $value) {
 					sg( $title.'.'.$key , $value ); 
 				}
-				$out['view_mode'] = 'printers';
+				$out['view_mode'] = 'printers';		
 				$out['OK']=1;
-			} else {
+				//restart cycle after updating
+				sg('cycle_' . $this->name . 'Control', 'restart');
+
+				} else {
 				$out['ERR']=1;
 			}
 		}
@@ -259,10 +262,8 @@ function usual(&$out) {
  }
  
  function processCycle() {
-	//$this->getConfig();
 	$class_name = $this->class_name;
-    //echo date('Y-m-d H:i:s').' $this subClass =  '. $this->subClass .' class_name =  '. $this->class_name .PHP_EOL;
-	require_once(DIR_MODULES.$this->name.'/get_octstate.inc.php');
+	include(DIR_MODULES.$this->name.'/get_octstate.inc.php');
   //to-do
  }
 /**
