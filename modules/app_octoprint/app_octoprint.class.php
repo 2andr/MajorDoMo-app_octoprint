@@ -405,7 +405,7 @@ function recursive( $params, $arr, $string )
 				else 
 					$compSay = gg ( $title.".compSay" );
 				
-				if ( $prevValue >= 96 && ( $value == 100 || $value == 0 ) ) 
+				if ( $prevValue >= 96 && $compSay >= 96 && ( $value == 100 || $value == 0 ) ) 
 				{
 					sg( $title.".compSay", $compStep  );
 					if( gg($title.'.ntfy_finishprint')) 
