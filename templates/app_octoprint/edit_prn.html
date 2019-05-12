@@ -1,84 +1,135 @@
-<div class="col-sm-10" id="main-content">
-<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
-[#if OK#]
-<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
-[#endif OK#]
+<ul id="tab" class="nav nav-tabs">
+	<li><a data-toggle="tab" href="#panel_devices"><#LANG_OCT_MAINSETT#></a></li>
+</ul>
 [#if ERR#]
 <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
 [#endif ERR#]
+[#if OK#]
+<div class="alert alert-success"><#LANG_DATA_SAVED#></div>
+[#else OK#]
+<form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
-[#if ID=""#]
-<legend><#LANG_NEW_RECORD#></legend>
-[#endif ID#]
-<!-- NAME (varchar) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
- <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control input"></div>
-</div>
-<!-- TITLE (varchar) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_TITLE#> (a-zA-Z0-9):</label>
- <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
-</div>
-<!-- API_URL (varchar) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_OCT_API_URL#>:
- (*)
- </label>
- <div class="controls"><input type="text" name="api_url" value="[#API_URL#]" class="input"></div>
-</div>
-<!-- API_KEY (varchar) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
-  <#LANG_OCT_API_KEY#>:
- (*)
- </label>
- <div class="controls"><input type="text" name="api_key" value="[#API_KEY#]" class="input"></div>
-</div>
-<!-- ASK_PERIOD (varchar) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_OCT_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_OCT_ASK_PERIOD#>:
- (*)
- </label>
- <div class="controls"><input type="text" name="ask_period" value="[#ASK_PERIOD#]" class="input"></div>
-</div>
-<!-- HIST_PERIOD (int(10)) -->
-<div class="form-group">
- <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
- <#LANG_OCT_HIST_PERIOD#>:
- </label>
- <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
-</div>
+<div class="tab-content">
+	<div id="panel_devices" class="tab-pane fade in">
+		[#if ID=""#]
+		<legend><#LANG_NEW_RECORD#></legend>
+		[#endif ID#]
+		<!-- NAME (varchar) -->
 
-<div><#LANG_OCT_VOICENOTIFY#>:</div>
-  <label class="control-label"[#if ERR_VOICEPERCENT#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_VOICEPERCENT#>:</label>
-  <div class="controls">
-  [#if VNF=""#]
-    <select name="vnf" class="form-control input">
-     [#begin VNF_OPTIONS#]<option value="[#percent#]"[#if SELECTED#] selected[#endif#]>[#TITLE#] %
-     [#end VNF_OPTIONS#]
-    </select>
-  [#endif !GID#]
-   </div>
+		<div class="form-group ">
+		 <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
+		 <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control input"></div>
+		</div>
+		<!-- TITLE (varchar) -->
+		<div class="form-group">
+		 <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_TITLE#> (a-zA-Z0-9):</label>
+		 <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
+		</div>
+		<!-- API_URL (varchar) -->
+		<div class="form-group">
+		 <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
+		 <#LANG_OCT_API_URL#>:
+		 (*)
+		 </label>
+		 <div class="controls"><input type="text" name="api_url" value="[#API_URL#]" class="input"></div>
+		</div>
+		<!-- API_KEY (varchar) -->
+		<div class="form-group">
+		 <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
+		  <#LANG_OCT_API_KEY#>:
+		 (*)
+		 </label>
+		 <div class="controls"><input type="text" name="api_key" value="[#API_KEY#]" class="input"></div>
+		</div>
+		<!-- ASK_PERIOD (varchar) -->
+		<div class="form-group">
+		 <label class="control-label"[#if ERR_OCT_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+		 <#LANG_OCT_ASK_PERIOD#>:
+		 (*)
+		 </label>
+		 <div class="controls"><input type="text" name="ask_period" value="[#ASK_PERIOD#]" class="input"></div>
+		</div>
+		<!-- HIST_PERIOD (int(10)) -->
+		<div class="form-group">
+		 <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+		 <#LANG_OCT_HIST_PERIOD#>:
+		 </label>
+		 <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
+		</div>
+		<br>
+		<!-- PRINTERON (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTERON#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_PRINTERON#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_printeron" value="1"[#if NTFY_PRINTERON="1"#] checked[#endif#]></div>
+		</div>
 
+		<!-- STARTPRINTING (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_STARTPRINT#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_STARTPRINT#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_startprint" value="1"[#if NTFY_STARTPRINT="1"#] checked[#endif#]></div>
+		</div>
+
+
+		<!-- PERCENTOFPRINT (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_PERCENT#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_PERCENTPRINT#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_percent" value="1"[#if NTFY_PERCENT="1"#] checked[#endif#]></div>
+		</div>
+
+		<label class="control-label"[#if ERR_NTFY_PERCENT_NUM#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_VOICEPERCENT#>:</label>
+		<div class="controls">
+			<select name="ntfy_percent_num" class="form-control input">
+			 [#begin NTFY_PERCENT_NUM_OPTIONS#]
+			 <option value="[#PERCENT#]"[#if SELECTED#] selected[#endif#]>[#TITLE#] %
+			 [#end NTFY_PERCENT_NUM_OPTIONS#]
+			</select>
+		</div>
+
+		<!-- FINISHPRINT (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_FINISHPRINT#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_FINISHPRINT#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_finishprint" value="1"[#if NTFY_FINISHPRINT="1"#] checked[#endif#]></div>
+		</div>
+
+		<!-- PRINTEROFF (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTEROFF#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_PRINTEROFF#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_printeroff" value="1"[#if NTFY_PRINTEROFF="1"#] checked[#endif#]></div>
+		</div>
+		
+	</div>
+
+</div>
 
 <div class="form-actions">
- [#if ID!=""#]
- <button type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-defaul btn-primary"><#LANG_SUBMIT#></button>
- [#else ID#]
- <button type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-defaul btn-primary"><#LANG_ADD#></button>
- [#endif ID#]
-<a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
-<input type="hidden" name="id" value="<#ID#>">
-<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
-<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
-<input type="hidden" name="mode" value="update">
-<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
-<input type="hidden" name="tab" value="<#TAB#>">
- 
+	[#if ID!=""#]
+	<button type="submit" name="subm" value="<#LANG_SUBMIT#>" class="btn btn-defaul btn-primary"><#LANG_SUBMIT#></button>
+	[#else ID#]
+	<button type="submit" name="subm" value="<#LANG_ADD#>" class="btn btn-defaul btn-primary"><#LANG_ADD#></button>
+	[#endif ID#]
+	<a href="?" class="btn btn-default"><#LANG_CANCEL#></a>
+	<input type="hidden" name="id" value="<#ID#>">
+	<input type="hidden" name="view_mode" value="<#VIEW_MODE#>">
+	<input type="hidden" name="edit_mode" value="<#EDIT_MODE#>">
+	<input type="hidden" name="mode" value="update">
+	<input type="hidden" name="data_source" value="<#DATA_SOURCE#>">
+	<input type="hidden" name="tab" value="<#TAB#>">
+	 
 </div>
 </fieldset>
 </form>
-</div>
+[#endif OK#]
+
+<script type="text/javascript">
+$('#tab a:first').tab('show');
+</script>

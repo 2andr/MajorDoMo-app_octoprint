@@ -169,24 +169,33 @@ function edit_prn(&$out, $id){
 			$out["API_URL"] = gg($title.'.api_url');
 			$out["HIST_PERIOD"] = gg($title.'.hist_period');
 			$out["ASK_PERIOD"] = gg($title.'.ask_period');
+			$out["NTFY_PRINTERON"] = gg($title.'.ntfy_printeron');
+			$out["NTFY_STARTPRINT"] = gg($title.'.ntfy_startprint');
+			$out["NTFY_PERCENT"] = gg($title.'.ntfy_percent');
+			$out["NTFY_PERCENT_NUM"] = gg($title.'.ntfy_percent_num');
+			$out["NTFY_FINISHPRINT"] = gg($title.'.ntfy_finishprint');
+			$out["NTFY_PRINTEROFF"] = gg($title.'.ntfy_printeroff');
 
 			$tmp = [ 
-			'0'=>[ 'PERCENT' => 0, 'TITLE' => '' ],
-			'1'=>[ 'PERCENT' => 5, 'TITLE' => '5' ],
-			'2'=>[ 'PERCENT' => 10, 'TITLE' => '10' ],
-			'3'=>[ 'PERCENT' => 20, 'TITLE' => '20' ],
-			'4'=>[ 'PERCENT' => 25, 'TITLE' => '25' ],
-			'4'=>[ 'PERCENT' => 50, 'TITLE' => '50' ],
+				[ 'PERCENT' => 0, 'TITLE' => '' ],
+				[ 'PERCENT' => 5, 'TITLE' => '5' ],
+				[ 'PERCENT' => 10, 'TITLE' => '10' ],
+				[ 'PERCENT' => 20, 'TITLE' => '20' ],
+				[ 'PERCENT' => 25, 'TITLE' => '25' ],
+				[ 'PERCENT' => 50, 'TITLE' => '50' ],
 			];
+
 			for( $i=0; $i < count($tmp); $i++) {
 				
-				if ( gg($title.'.vnf') == $tmp[$i]['PERCENT']) {
+				if ( gg($title.'.ntfy_percent_num') == $tmp[$i]['PERCENT']) {
 					$tmp[$i]['SELECTED'] = 1;
 				}
 				
-				if ( gg($title.'.vnf')=="" && $i == 0) $tmp[$i]['SELECTED']=1;
 			}
-			$out['VNF_OPTIONS']=$tmp;
+
+			$out['NTFY_PERCENT_NUM_OPTIONS'] = $tmp;
+			
+			
 
 		}	
 	}
@@ -241,6 +250,30 @@ function edit_prn(&$out, $id){
 				$out['ERR_HIST_PERIOD']=1;
 				$ok=0;
 			}
+
+			// NTFY_PRINTERON
+			global $ntfy_printeron;
+			$rec['ntfy_printeron']=(int)$ntfy_printeron;
+
+			// NTFY_STARTPRINT
+			global $ntfy_startprint;
+			$rec['ntfy_startprint']=(int)$ntfy_startprint;
+
+			// NTFY_PERCENT
+			global $ntfy_percent;
+			$rec['ntfy_percent']=(int)$ntfy_percent;
+
+			// NTFY_PERCENT_NUM
+			global $ntfy_percent_num;
+			$rec['ntfy_percent_num'] = $ntfy_percent_num;
+
+			// NTFY_FINISHPRINT
+			global $ntfy_finishprint;
+			$rec['ntfy_finishprint']=(int)$ntfy_finishprint;
+
+			// NTFY_PRINTEROFF
+			global $ntfy_printeroff;
+			$rec['ntfy_printeroff']=(int)$ntfy_printeroff;
 
 			//UPDATING RECORD
 			if ($ok) {
@@ -340,8 +373,8 @@ function recursive( $params, $arr, $string )
 			//We need to loop through it.
 			$this->recursive( $params, $value, $string.$key.'_' );
 		} else{
-			
-			$prevValue = gg( $params['title'].".".$string.$key );
+			$title = $params['title'];
+			$prevValue = gg( $title.".".$string.$key );
 			
 			$histPeriod = 0;
 			
@@ -353,42 +386,51 @@ function recursive( $params, $arr, $string )
 			if ($key == 'completion')
 			{
 				$value = round( $value, 0) ;
-
-				$compStep = 10;
 				
-				if ( !gg ($params['title'].".compSay") ) 
+				$compStep = 10;
+				if ( gg ($title.".ntfy_percent_num") )
+						$compStep = gg ($title.".ntfy_percent_num");
+				
+				if ( !gg ($title.".compSay") ) 
 				{
-					sg ($params['title'].".compSay", $compStep);
+					sg ($title.".compSay", $compStep);
 					$compSay = $compStep; 
 				}
 				else 
-					$compSay = gg ( $params['title'].".compSay" );
+					$compSay = gg ( $title.".compSay" );
 				
-				if ( $prevValue >= 96 && ( $value == 100 || $value == 0 ) ) {
-				
-					sg( $params['title'].".compSay", $compStep  );
-					$this->sayOcto ( LANG_OCT_V_FINISHPRINT );
+				if ( $prevValue >= 96 && ( $value == 100 || $value == 0 ) ) 
+				{
+					sg( $title.".compSay", $compStep  );
+					if( gg($title.'.ntfy_finishprint')) 
+						$this->sayOcto ( LANG_OCT_V_FINISHPRINT );
 			
-				} else if (  ( $value > 0 && $value < 100 ) && $value >= $compSay ){
-				
-					sg( $params['title'].".compSay", $compSay + $compStep  );
-					$message = LANG_OCT_V_PERCENTPRINT;
-					$message = sprintf( $message, $value); 
-					$this->sayOcto ( $message );
+				} 
+				else if ( ( $value > 0 && $value < 100 ) && $value >= $compSay )
+				{
+					sg( $title.".compSay", $compSay + $compStep  );
+					
+					if( gg($title.'.ntfy_percent') ) 
+					{
+						$message = LANG_OCT_V_PERCENTPRINT;
+						$message = sprintf( $message, $value); 
+						$this->sayOcto ( $message );
+					}
 				}
+			
 			}
 			
 			
 			// Check state status
 			if ($key == 'state')
 			{
-				if ($prevValue =="Offline" && $value == "Operational")
-					$this->sayOcto ( LANG_OCT_V_PRINTEROFF );
+				if ( gg($title.'.ntfy_printeron') && $prevValue =="Offline" && $value == "Operational" )
+					$this->sayOcto ( LANG_OCT_V_PRINTERON );
 				
-				else if ($prevValue =="Operational" && $value == "Printing")
+				else if ( gg($title.'.ntfy_startprint') && $prevValue =="Operational" && $value == "Printing")
 					$this->sayOcto ( LANG_OCT_V_STARTPRINT );
 
-				else if ($prevValue =="Operational" && $value == "Offline")
+				else if ( gg($title.'.ntfy_printeroff') && $prevValue =="Operational" && $value == "Offline")
 					$this->sayOcto ( LANG_OCT_V_PRINTEROFF );
 
 			}
@@ -413,7 +455,7 @@ function recursive( $params, $arr, $string )
 			if ( $value != $prevValue )
 			{
 				addClassProperty( $params['class_name'], $string.$key, $histPeriod);
-				sg( $params['title'].".".$string.$key, $value );
+				sg( $title.".".$string.$key, $value );
 			}
 		}
 		
