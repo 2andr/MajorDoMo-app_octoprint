@@ -8,6 +8,9 @@
 */
 //
 //
+@include_once(ROOT.'languages/app_octoprint_'.SETTINGS_SITE_LANGUAGE.'.php');
+@include_once(ROOT.'languages/app_octoprint_default'.'.php');
+
 class app_octoprint extends module {
 	public $name;
 	public $title;
@@ -20,11 +23,13 @@ class app_octoprint extends module {
 * @access private
 */
 function __construct() {
-  $this->name = "app_octoprint";
-  $this->title = "Octoprint";
-  $this->class_name = "octoprint";
-  $this->module_category = "<#LANG_SECTION_APPLICATIONS#>";
-  $this->checkInstalled();
+	$this->name = "app_octoprint";
+	$this->title = "Octoprint";
+	$this->class_name = "octoprint";
+	$this->module_category = "<#LANG_SECTION_APPLICATIONS#>";
+	$this->saveHistory = [ "state", "progress_printTimeLeft", "progress_completion" ];
+	$this->api_operations = [ '/api/job', '/api/printer'];	
+	$this->checkInstalled();
 }
 /**
 * saveParams
@@ -34,20 +39,20 @@ function __construct() {
 * @access public
 */
 function saveParams($data=1) {
- $p=array();
- if (IsSet($this->id)) {
-  $p["id"]=$this->id;
- }
- if (IsSet($this->view_mode)) {
-  $p["view_mode"]=$this->view_mode;
- }
- if (IsSet($this->edit_mode)) {
-  $p["edit_mode"]=$this->edit_mode;
- }
- if (IsSet($this->tab)) {
-  $p["tab"]=$this->tab;
- }
- return parent::saveParams($p);
+	$p=array();
+	if (IsSet($this->id)) 
+		$p["id"]=$this->id;
+	
+	if (IsSet($this->view_mode)) 
+		$p["view_mode"]=$this->view_mode;
+	
+	if (IsSet($this->edit_mode)) 
+		$p["edit_mode"]=$this->edit_mode;
+	
+	if (IsSet($this->tab)) 
+		$p["tab"]=$this->tab;
+	
+	return parent::saveParams($p);
 }
 /**
 * getParams
@@ -164,6 +169,25 @@ function edit_prn(&$out, $id){
 			$out["API_URL"] = gg($title.'.api_url');
 			$out["HIST_PERIOD"] = gg($title.'.hist_period');
 			$out["ASK_PERIOD"] = gg($title.'.ask_period');
+
+			$tmp = [ 
+			'0'=>[ 'PERCENT' => 0, 'TITLE' => '' ],
+			'1'=>[ 'PERCENT' => 5, 'TITLE' => '5' ],
+			'2'=>[ 'PERCENT' => 10, 'TITLE' => '10' ],
+			'3'=>[ 'PERCENT' => 20, 'TITLE' => '20' ],
+			'4'=>[ 'PERCENT' => 25, 'TITLE' => '25' ],
+			'4'=>[ 'PERCENT' => 50, 'TITLE' => '50' ],
+			];
+			for( $i=0; $i < count($tmp); $i++) {
+				
+				if ( gg($title.'.vnf') == $tmp[$i]['PERCENT']) {
+					$tmp[$i]['SELECTED'] = 1;
+				}
+				
+				if ( gg($title.'.vnf')=="" && $i == 0) $tmp[$i]['SELECTED']=1;
+			}
+			$out['VNF_OPTIONS']=$tmp;
+
 		}	
 	}
 	else if ($this->mode=='update') { 
@@ -249,23 +273,160 @@ function edit_prn(&$out, $id){
 * @access public
 */
 function usual(&$out) {
- $this->admin($out);
+	$this->admin($out);
 }
  
- function processSubscription($event, $details='') {
- $this->getConfig();
-  if ($event=='SAY') {
-   $level=$details['level'];
-   $message=$details['message'];
-   //...
-  }
- }
+function processSubscription($event, $details='') {
+	$this->getConfig();
+	if ($event=='SAY') {
+		$level=$details['level'];
+		$message=$details['message'];
+		//...
+	}
+}
  
- function processCycle() {
+function processCycle() {
 	$class_name = $this->class_name;
-	include(DIR_MODULES.$this->name.'/get_octstate.inc.php');
+	//include(DIR_MODULES.$this->name.'/get_octstate.inc.php');
+	$printers = getObjectsByClass($class_name);
+
+	if ( is_array($printers))
+	{
+		foreach ( $printers as $value ){
+			$title = $value['TITLE'];
+
+			$apiKey = gg( $title.'.API_KEY' );
+			$api_url = gg( $title.'.API_URL' );
+
+			if ( !$api_url && !$apiKey && !$title ) continue;
+
+			DebMes( date('Y-m-d H:i:s').' Check printer '. $title );
+			foreach ( $this->api_operations as $operation )
+			{
+				$query = $api_url . $operation. "?apikey=" . $apiKey;
+				$data =  getURL($query);		
+				$result = json_decode($data);
+				if ($result->cod == "404" || $result->cod == "500") 
+				{
+					DebMes('Octoprint: '.$result->message);
+					continue;				
+				}
+				
+				$result = json_decode($data, true);
+
+				if($result!=false && !empty($result)) {
+					
+					$params = [ 
+						'class_name' => $class_name,
+						'title' => $title,
+						'histPeriod' => gg( $title.'.hist_period') ? gg( $title.'.hist_period' ) : 0 ,
+					];
+					DebMes( date('Y-m-d H:i:s').' Service answered' );
+					$this->recursive( $params, $result, '' );
+				}
+			}
+
+		}
+	}	
   //to-do
  }
+ 
+function recursive( $params, $arr, $string )
+{
+	
+	foreach ($arr as $key => $value )
+	{
+		if(is_array($value)){
+			//We need to loop through it.
+			$this->recursive( $params, $value, $string.$key.'_' );
+		} else{
+			
+			$prevValue = gg( $params['title'].".".$string.$key );
+			
+			$histPeriod = 0;
+			
+			if ( in_array( $string.$key,  $this->saveHistory ))
+				$histPeriod = $params['histPeriod'];
+			
+			//It is not an array, so process some values.
+			//Round process completion % to xx format
+			if ($key == 'completion')
+			{
+				$value = round( $value, 0) ;
+
+				$compStep = 10;
+				
+				if ( !gg ($params['title'].".compSay") ) 
+				{
+					sg ($params['title'].".compSay", $compStep);
+					$compSay = $compStep; 
+				}
+				else 
+					$compSay = gg ( $params['title'].".compSay" );
+				
+				if ( $prevValue >= 96 && ( $value == 100 || $value == 0 ) ) {
+				
+					sg( $params['title'].".compSay", $compStep  );
+					$this->sayOcto ( LANG_OCT_V_FINISHPRINT );
+			
+				} else if (  ( $value > 0 && $value < 100 ) && $value >= $compSay ){
+				
+					sg( $params['title'].".compSay", $compSay + $compStep  );
+					$message = LANG_OCT_V_PERCENTPRINT;
+					$message = sprintf( $message, $value); 
+					$this->sayOcto ( $message );
+				}
+			}
+			
+			
+			// Check state status
+			if ($key == 'state')
+			{
+				if ($prevValue =="Offline" && $value == "Operational")
+					$this->sayOcto ( LANG_OCT_V_PRINTEROFF );
+				
+				else if ($prevValue =="Operational" && $value == "Printing")
+					$this->sayOcto ( LANG_OCT_V_STARTPRINT );
+
+				else if ($prevValue =="Operational" && $value == "Offline")
+					$this->sayOcto ( LANG_OCT_V_PRINTEROFF );
+
+			}
+			
+			
+			// Convert printTimeLeft from seconds to HH:MM:SS format
+			if ($key == 'printTimeLeft')
+				$value = gmdate("G:i:s", $value);
+			
+			// Strip printing file name extension
+			if ($string == 'job_file_' && $key == 'display')
+				$value =  basename($value, ".gcode");
+
+			// Round temp actual % to xx format
+			if ($string == 'temperature_bed_' && $key == 'actual')
+				$value = round( $value, 1) ;
+
+			// Round temp actual % to xx format
+			if ($string == 'temperature_tool0_' && $key == 'actual')
+				$value = round( $value, 1) ;
+
+			if ( $value != $prevValue )
+			{
+				addClassProperty( $params['class_name'], $string.$key, $histPeriod);
+				sg( $params['title'].".".$string.$key, $value );
+			}
+		}
+		
+	}
+	
+}	
+
+function sayOcto( $message ){
+	// запретим голосовые уведомления в ночное время
+	if ( gg('NightMode.active') == 0)
+		say ( $message, 2 );
+}
+
 /**
 * Install
 *
@@ -280,16 +441,17 @@ function usual(&$out) {
 }
 // --------------------------------------------------------------------
 
-   public function uninstall()
-   {
-	  unsubscribeFromEvent($this->name, 'SAY');
-      SQLExec("delete from pvalues where property_id in (select id FROM properties where object_id in (select id from objects where class_id = (select id from classes where title = 'octoprint')))");
-      SQLExec("delete from properties where object_id in (select id from objects where class_id = (select id from classes where title = 'octoprint'))");
-      SQLExec("delete from objects where class_id = (select id from classes where title = 'octoprint')");
-      SQLExec("delete from classes where title = 'octoprint'");
-      parent::uninstall();
-   }
+	public function uninstall()
+	{
+		unsubscribeFromEvent($this->name, 'SAY');
+		SQLExec("delete from pvalues where property_id in (select id FROM properties where object_id in (select id from objects where class_id = (select id from classes where title = 'octoprint')))");
+		SQLExec("delete from properties where object_id in (select id from objects where class_id = (select id from classes where title = 'octoprint'))");
+		SQLExec("delete from objects where class_id = (select id from classes where title = 'octoprint')");
+		SQLExec("delete from classes where title = 'octoprint'");
+		parent::uninstall();
+	}
 }
+
 /*
 *
 * TW9kdWxlIGNyZWF0ZWQgTWFyIDEwLCAyMDE5IHVzaW5nIFNlcmdlIEouIHdpemFyZCAoQWN0aXZlVW5pdCBJbmMgd3d3LmFjdGl2ZXVuaXQuY29tKQ==

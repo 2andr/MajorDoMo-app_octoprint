@@ -1,6 +1,6 @@
 <?php
 /**
- * Russian language file for OpenWeatherMap module
+ * Russian language file for OCTOPrint module
  */
 
 $dictionary = array(
@@ -16,6 +16,14 @@ $dictionary = array(
 'OCT_PRINTER_STATUS' => 'Текущий статус принтера',
 'OCT_STATE' => 'Статус принтера',
 'OCT_FILE' => 'Файл',
+'OCT_NOTIFICATIONS' => 'Настройки увеомлений',
+'OCT_VOICENOTIFY' => 'Голосовое уведомление',
+'OCT_VOICEPERCENT' => 'О степени гоовности каждые',
+'OCT_V_STARTPRINT' => 'Старт тридэ печати!',
+'OCT_V_PRINTERON' => 'Принтер включен.',
+'OCT_V_PRINTEROFF' => 'Принтер выключен.',
+'OCT_V_FINISHPRINT' => 'Закончена тридэ печать!',
+'OCT_V_PERCENTPRINT' => 'Печать файла завершена на %d процентов.',
 
 
 /* end module names */

@@ -52,6 +52,17 @@
  <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
 </div>
 
+<div><#LANG_OCT_VOICENOTIFY#>:</div>
+  <label class="control-label"[#if ERR_VOICEPERCENT#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_VOICEPERCENT#>:</label>
+  <div class="controls">
+  [#if VNF=""#]
+    <select name="vnf" class="form-control input">
+     [#begin VNF_OPTIONS#]<option value="[#percent#]"[#if SELECTED#] selected[#endif#]>[#TITLE#] %
+     [#end VNF_OPTIONS#]
+    </select>
+  [#endif !GID#]
+   </div>
+
 
 <div class="form-actions">
  [#if ID!=""#]
