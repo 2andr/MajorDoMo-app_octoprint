@@ -11,11 +11,11 @@
 <fieldset>
 <div class="tab-content">
 	<div id="panel_devices" class="tab-pane fade in">
-		[#if ID=""#]
+		[#if TITLE=""#]
 		<legend><#LANG_NEW_RECORD#></legend>
-		[#endif ID#]
+		[#endif TITLE#]
+		<br>
 		<!-- NAME (varchar) -->
-
 		<div class="form-group ">
 		 <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
 		 <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control input"></div>
@@ -57,6 +57,8 @@
 		 <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
 		</div>
 		<br>
+		
+		<h4><#LANG_OCT_VOICENOTIFICATIONS#></h4>
 		<!-- PRINTERON (varchar) -->
 		<div class="form-group">
 			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTERON#] style="color:red;font-weight:bold"[#endif#]>
