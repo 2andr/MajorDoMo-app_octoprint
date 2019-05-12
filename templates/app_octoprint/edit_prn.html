@@ -59,6 +59,14 @@
 		<br>
 		
 		<h4><#LANG_OCT_VOICENOTIFICATIONS#></h4>
+		<!-- NIGHTMODE (varchar) -->
+		<div class="form-group">
+			<label class="col-lg-3 control-label"[#if ERR_NTFY_NIGHTMODE#] style="color:red;font-weight:bold"[#endif#]>
+			<#LANG_OCT_V_NIGHTMODE#>:
+			</label>
+			<div class="controls"><input type="checkbox" name="ntfy_nightmode" value="1"[#if NTFY_NIGHTMODE="1"#] checked[#endif#]></div>
+		</div>
+
 		<!-- PRINTERON (varchar) -->
 		<div class="form-group">
 			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTERON#] style="color:red;font-weight:bold"[#endif#]>

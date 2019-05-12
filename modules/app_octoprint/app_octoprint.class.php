@@ -169,6 +169,7 @@ function edit_prn(&$out, $id){
 			$out["API_URL"] = gg($title.'.api_url');
 			$out["HIST_PERIOD"] = gg($title.'.hist_period');
 			$out["ASK_PERIOD"] = gg($title.'.ask_period');
+			$out["NTFY_NIGHTMODE"] = gg($title.'.ntfy_nightmode');
 			$out["NTFY_PRINTERON"] = gg($title.'.ntfy_printeron');
 			$out["NTFY_STARTPRINT"] = gg($title.'.ntfy_startprint');
 			$out["NTFY_PERCENT"] = gg($title.'.ntfy_percent');
@@ -250,6 +251,10 @@ function edit_prn(&$out, $id){
 				$out['ERR_HIST_PERIOD']=1;
 				$ok=0;
 			}
+
+			// NTFY_NIGHTMODE
+			global $ntfy_nightmode;
+			$rec['ntfy_nightmode']=(int)$ntfy_nightmode;
 
 			// NTFY_PRINTERON
 			global $ntfy_printeron;
@@ -375,6 +380,7 @@ function recursive( $params, $arr, $string )
 		} else{
 			$title = $params['title'];
 			$prevValue = gg( $title.".".$string.$key );
+			$nightMode = (int)gg( $title.".ntfy_nightmode" );
 			
 			$histPeriod = 0;
 			
@@ -403,7 +409,7 @@ function recursive( $params, $arr, $string )
 				{
 					sg( $title.".compSay", $compStep  );
 					if( gg($title.'.ntfy_finishprint')) 
-						$this->sayOcto ( LANG_OCT_V_FINISHPRINT );
+						$this->sayOcto ( LANG_OCT_V_FINISHPRINT, $nightMode );
 			
 				} 
 				else if ( ( $value > 0 && $value < 100 ) && $value >= $compSay )
@@ -414,7 +420,7 @@ function recursive( $params, $arr, $string )
 					{
 						$message = LANG_OCT_V_PERCENTPRINT;
 						$message = sprintf( $message, $value); 
-						$this->sayOcto ( $message );
+						$this->sayOcto ( $message, $nightMode );
 					}
 				}
 			
@@ -425,13 +431,13 @@ function recursive( $params, $arr, $string )
 			if ($key == 'state')
 			{
 				if ( gg($title.'.ntfy_printeron') && $prevValue =="Offline" && $value == "Operational" )
-					$this->sayOcto ( LANG_OCT_V_PRINTERON );
+					$this->sayOcto ( LANG_OCT_V_PRINTERON, $nightMode );
 				
 				else if ( gg($title.'.ntfy_startprint') && $prevValue =="Operational" && $value == "Printing")
-					$this->sayOcto ( LANG_OCT_V_STARTPRINT );
+					$this->sayOcto ( LANG_OCT_V_STARTPRINT, $nightMode );
 
 				else if ( gg($title.'.ntfy_printeroff') && $prevValue =="Operational" && $value == "Offline")
-					$this->sayOcto ( LANG_OCT_V_PRINTEROFF );
+					$this->sayOcto ( LANG_OCT_V_PRINTEROFF, $nightMode );
 
 			}
 			
@@ -463,9 +469,9 @@ function recursive( $params, $arr, $string )
 	
 }	
 
-function sayOcto( $message ){
+function sayOcto( $message, $nightMode = 0 ){
 	// запретим голосовые уведомления в ночное время
-	if ( gg('NightMode.active') == 0)
+	if ( gg('NightMode.active') == 0 || $nightMode == 1 )
 		say ( $message, 2 );
 }
 
