@@ -18,13 +18,16 @@ $dictionary = array(
 'OCT_STATE' => 'Статус принтера',
 'OCT_FILE' => 'Файл',
 'OCT_VOICENOTIFICATIONS' => 'Настройки голосовых уведомлений',
-'OCT_VOICEPERCENT' => 'О степени гоовности каждые',
+'OCT_KODINOTIFICATIONS' => 'Настройки Kodi уведомлений',
+'OCT_VOICEPERCENT' => 'О степени готовности каждые',
 'OCT_V_STARTPRINT' => 'Старт тридэ печати!',
 'OCT_V_NIGHTMODE' => 'Уведомлять в ночное время',
 'OCT_V_PRINTERON' => 'Принтер включен.',
 'OCT_V_PRINTEROFF' => 'Принтер выключен.',
 'OCT_V_FINISHPRINT' => 'Закончена тридэ печать!',
 'OCT_V_PERCENTPRINT' => 'Печать файла завершена на %d процентов.',
+'OCT_DAY_NTFYLVL' => 'Уровень для оповещения в дневное время.',
+'OCT_NIGHT_NTFYLVL' => 'Уровень для оповещения в ночное время.',
 
 
 /* end module names */

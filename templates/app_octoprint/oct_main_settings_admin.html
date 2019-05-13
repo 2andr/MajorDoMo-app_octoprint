@@ -1,0 +1,46 @@
+
+[#if TITLE=""#]
+<legend><#LANG_NEW_RECORD#></legend>
+[#endif TITLE#]
+<br>
+<!-- NAME (varchar) -->
+<div class="form-group ">
+ <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
+ <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control  input"></div>
+</div>
+<!-- TITLE (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_TITLE#> (a-zA-Z0-9):</label>
+ <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control  input"></div>
+</div>
+<!-- API_URL (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_API_URL#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="api_url" value="[#API_URL#]" class="form-control  input"></div>
+</div>
+<!-- API_KEY (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
+  <#LANG_OCT_API_KEY#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="api_key" value="[#API_KEY#]" class="form-control  input"></div>
+</div>
+<!-- ASK_PERIOD (varchar) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_OCT_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_ASK_PERIOD#>:
+ (*)
+ </label>
+ <div class="controls"><input type="text" name="ask_period" value="[#ASK_PERIOD#]" class="form-control  input"></div>
+</div>
+<!-- HIST_PERIOD (int(10)) -->
+<div class="form-group">
+ <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
+ <#LANG_OCT_HIST_PERIOD#>:
+ </label>
+ <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="form-control  input"></div>
+</div>	

@@ -170,6 +170,8 @@ function edit_prn(&$out, $id){
 			$out["HIST_PERIOD"] = gg($title.'.hist_period');
 			$out["ASK_PERIOD"] = gg($title.'.ask_period');
 			$out["NTFY_NIGHTMODE"] = gg($title.'.ntfy_nightmode');
+			$out["DAY_NTFYLVL"] = gg($title.'.day_ntfylvl');
+			$out["NIGHT_NTFYLVL"] = gg($title.'.night_ntfylvl');
 			$out["NTFY_PRINTERON"] = gg($title.'.ntfy_printeron');
 			$out["NTFY_STARTPRINT"] = gg($title.'.ntfy_startprint');
 			$out["NTFY_PERCENT"] = gg($title.'.ntfy_percent');
@@ -185,6 +187,8 @@ function edit_prn(&$out, $id){
 				[ 'PERCENT' => 25, 'TITLE' => '25' ],
 				[ 'PERCENT' => 50, 'TITLE' => '50' ],
 			];
+			
+			$tmp2 = $tmp;
 
 			for( $i=0; $i < count($tmp); $i++) {
 				
@@ -195,6 +199,23 @@ function edit_prn(&$out, $id){
 			}
 
 			$out['NTFY_PERCENT_NUM_OPTIONS'] = $tmp;
+
+			$out["KODI_PRINTERON"] = gg($title.'.kodi_printeron');
+			$out["KODI_STARTPRINT"] = gg($title.'.kodi_startprint');
+			$out["KODI_PERCENT"] = gg($title.'.kodi_percent');
+			$out["KODI_PERCENT_NUM"] = gg($title.'.kodi_percent_num');
+			$out["KODI_FINISHPRINT"] = gg($title.'.kodi_finishprint');
+			$out["KODI_PRINTEROFF"] = gg($title.'.kodi_printeroff');
+
+			for( $i=0; $i < count($tmp2); $i++) {
+				
+				if ( gg($title.'.kodi_percent_num') == $tmp2[$i]['PERCENT']) {
+					$tmp2[$i]['SELECTED'] = 1;
+				}
+				
+			}
+
+			$out['KODI_PERCENT_NUM_OPTIONS'] = $tmp2;
 			
 			
 
@@ -256,6 +277,22 @@ function edit_prn(&$out, $id){
 			global $ntfy_nightmode;
 			$rec['ntfy_nightmode']=(int)$ntfy_nightmode;
 
+			// DAY_NTFYLVL
+			global $day_ntfylvl;
+			$rec['day_ntfylvl']=$day_ntfylvl;
+			if ($rec['day_ntfylvl']=='') {
+				$out['ERR_DAY_NTFYLVL']=1;
+				$ok=0;
+			}
+
+			// NIGHT_NTFYLVL
+			global $night_ntfylvl;
+			$rec['night_ntfylvl']=$night_ntfylvl;
+			if ($rec['night_ntfylvl']=='') {
+				$out['ERR_NIGHT_NTFYLVL']=1;
+				$ok=0;
+			}
+
 			// NTFY_PRINTERON
 			global $ntfy_printeron;
 			$rec['ntfy_printeron']=(int)$ntfy_printeron;
@@ -279,6 +316,30 @@ function edit_prn(&$out, $id){
 			// NTFY_PRINTEROFF
 			global $ntfy_printeroff;
 			$rec['ntfy_printeroff']=(int)$ntfy_printeroff;
+			
+			// KODI_PRINTERON
+			global $kodi_printeron;
+			$rec['kodi_printeron']=(int)$kodi_printeron;
+
+			// KODI_STARTPRINT
+			global $kodi_startprint;
+			$rec['kodi_startprint']=(int)$kodi_startprint;
+
+			// KODI_PERCENT
+			global $kodi_percent;
+			$rec['kodi_percent']=(int)$kodi_percent;
+
+			// KODI_PERCENT_NUM
+			global $kodi_percent_num;
+			$rec['kodi_percent_num'] = $kodi_percent_num;
+
+			// KODI_FINISHPRINT
+			global $kodi_finishprint;
+			$rec['kodi_finishprint']=(int)$kodi_finishprint;
+
+			// KODI_PRINTEROFF
+			global $kodi_printeroff;
+			$rec['kodi_printeroff']=(int)$kodi_printeroff;			
 
 			//UPDATING RECORD
 			if ($ok) {
@@ -371,6 +432,8 @@ function processCycle() {
  
 function recursive( $params, $arr, $string )
 {
+@include_once(DIR_MODULES . 'kodi_notify/kodi_notify.class.php');
+$notify = new kodi_notify();
 	
 	foreach ($arr as $key => $value )
 	{
@@ -380,7 +443,11 @@ function recursive( $params, $arr, $string )
 		} else{
 			$title = $params['title'];
 			$prevValue = gg( $title.".".$string.$key );
-			$nightMode = (int)gg( $title.".ntfy_nightmode" );
+			$notifyOptions = [
+				"nightMode" => gg( $title.".ntfy_nightmode" ),
+				"day_ntfylvl" => gg( $title.".day_ntfylvl" ),
+				"night_ntfylvl" => gg( $title.".night_ntfylvl" ),
+			];
 			
 			$histPeriod = 0;
 			
@@ -393,34 +460,67 @@ function recursive( $params, $arr, $string )
 			{
 				$value = round( $value, 0) ;
 				
-				$compStep = 10;
+				$voiceStep = 10;
+				
 				if ( gg ($title.".ntfy_percent_num") )
-						$compStep = gg ($title.".ntfy_percent_num");
+						$voiceStep = gg ($title.".ntfy_percent_num");
 				
 				if ( !gg ($title.".compSay") ) 
 				{
-					sg ($title.".compSay", $compStep);
-					$compSay = $compStep; 
+					sg ($title.".compSay", $voiceStep);
+					$compSay = $voiceStep; 
 				}
 				else 
 					$compSay = gg ( $title.".compSay" );
 				
 				if ( $prevValue >= 96 && $compSay >= 96 && ( $value == 100 || $value == 0 ) ) 
 				{
-					sg( $title.".compSay", $compStep  );
+					sg( $title.".compSay", $voiceStep  );
 					if( gg($title.'.ntfy_finishprint')) 
-						$this->sayOcto ( LANG_OCT_V_FINISHPRINT, $nightMode );
+						$this->sayOcto ( LANG_OCT_V_FINISHPRINT, $notifyOptions );
 			
 				} 
 				else if ( ( $value > 0 && $value < 100 ) && $value >= $compSay )
 				{
-					sg( $title.".compSay", $compSay + $compStep  );
+					sg( $title.".compSay", $compSay + $voiceStep  );
 					
 					if( gg($title.'.ntfy_percent') ) 
 					{
 						$message = LANG_OCT_V_PERCENTPRINT;
 						$message = sprintf( $message, $value); 
-						$this->sayOcto ( $message, $nightMode );
+						$this->sayOcto ( $message, $notifyOptions );
+					}
+				}
+				
+				$kodiStep = 10;
+				
+				if ( gg ($title.".kodi_percent_num") )
+						$kodiStep = gg ($title.".kodi_percent_num");
+				
+				if ( !gg ($title.".kodiSay") ) 
+				{
+					sg ($title.".kodiSay", $kodiStep);
+					$kodiSay = $kodiStep; 
+				}
+				else 
+					$kodiSay = gg ( $title.".kodiSay" );
+				
+				if ( $prevValue >= 96 && $kodiSay >= 96 && ( $value == 100 || $value == 0 ) ) 
+				{
+					sg( $title.".kodiSay", $kodiStep  );
+					if( gg($title.'.kodi_finishprint')) 
+						$notify->sendNotifyAll( LANG_OCT_V_FINISHPRINT );
+			
+				} 
+				else if ( ( $value > 0 && $value < 100 ) && $value >= $kodiSay )
+				{
+					sg( $title.".kodiSay", $kodiSay + $kodiStep  );
+					
+					if( gg($title.'.kodi_percent') ) 
+					{
+						$message = LANG_OCT_V_PERCENTPRINT;
+						$message = sprintf( $message, $value); 
+						$notify->sendNotifyAll( $message );
 					}
 				}
 			
@@ -430,14 +530,30 @@ function recursive( $params, $arr, $string )
 			// Check state status
 			if ($key == 'state')
 			{
-				if ( gg($title.'.ntfy_printeron') && $prevValue =="Offline" && $value == "Operational" )
-					$this->sayOcto ( LANG_OCT_V_PRINTERON, $nightMode );
-				
-				else if ( gg($title.'.ntfy_startprint') && $prevValue =="Operational" && $value == "Printing")
-					$this->sayOcto ( LANG_OCT_V_STARTPRINT, $nightMode );
+				if ( $prevValue =="Offline" && $value == "Operational" )
+				{
+					if (gg($title.'.ntfy_printeron')) 
+						$this->sayOcto ( LANG_OCT_V_PRINTERON, $notifyOptions );
+					
+					if (gg($title.'.kodi_printeron'))
+						$notify->sendNotifyAll(LANG_OCT_V_PRINTERON);
+				}
+				else if ( $prevValue =="Operational" && $value == "Printing")
+				{
+					if (gg($title.'.ntfy_startprint'))
+						$this->sayOcto ( LANG_OCT_V_STARTPRINT, $notifyOptions );
+					
+					if (gg($title.'.kodi_startprint'))
+						$notify->sendNotifyAll(LANG_OCT_V_STARTPRINT);
+				}
+				else if ( $prevValue =="Operational" && $value == "Offline")
+				{
+					if (gg($title.'.ntfy_printeroff') )
+						$this->sayOcto ( LANG_OCT_V_PRINTEROFF, $notifyOptions );
 
-				else if ( gg($title.'.ntfy_printeroff') && $prevValue =="Operational" && $value == "Offline")
-					$this->sayOcto ( LANG_OCT_V_PRINTEROFF, $nightMode );
+					if (gg($title.'.kodi_printeroff'))
+						$notify->sendNotifyAll(LANG_OCT_V_PRINTEROFF);
+				}
 
 			}
 			
@@ -469,10 +585,15 @@ function recursive( $params, $arr, $string )
 	
 }	
 
-function sayOcto( $message, $nightMode = 0 ){
+function sayOcto( $message, $notifyOptions ){
 	// запретим голосовые уведомления в ночное время
-	if ( gg('NightMode.active') == 0 || $nightMode == 1 )
-		say ( $message, 2 );
+	if ( gg('NightMode.active') == 0 )
+		say ( $message, $notifyOptions['day_ntfylvl'] );
+	else 
+	{
+		if ($notifyOptions['ntfy_nightmode'] == 1 )
+			say ( $message, $notifyOptions['night_ntfylvl'] );
+	}
 }
 
 /**

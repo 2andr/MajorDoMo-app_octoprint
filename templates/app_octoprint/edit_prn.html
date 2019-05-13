@@ -1,5 +1,7 @@
 <ul id="tab" class="nav nav-tabs">
-	<li><a data-toggle="tab" href="#panel_devices"><#LANG_OCT_MAINSETT#></a></li>
+	<li><a data-toggle="tab" href="#panel_main"><#LANG_OCT_MAINSETT#></a></li>
+	<li><a data-toggle="tab" href="#panel_voice"><#LANG_OCT_VOICENOTIFICATIONS#></a></li>
+	<li><a data-toggle="tab" href="#panel_kodi"><#LANG_OCT_KODINOTIFICATIONS#></a></li>
 </ul>
 [#if ERR#]
 <div class="alert alert-error"><#LANG_FILLOUT_REQURED#></div>
@@ -10,115 +12,15 @@
 <form action="?" method="post" enctype="multipart/form-data" name="frmEdit" class="form-horizontal">
 <fieldset>
 <div class="tab-content">
-	<div id="panel_devices" class="tab-pane fade in">
-		[#if TITLE=""#]
-		<legend><#LANG_NEW_RECORD#></legend>
-		[#endif TITLE#]
-		<br>
-		<!-- NAME (varchar) -->
-		<div class="form-group ">
-		 <label class="control-label"[#if ERR_NAME#] style="color:red;font-weight:bold"[#endif#]><#LANG_NAME#>:</label>
-		 <div class="controls"><input type="text" name="name" value="[#NAME#]" class="form-control input"></div>
-		</div>
-		<!-- TITLE (varchar) -->
-		<div class="form-group">
-		 <label class="control-label"[#if ERR_TITLE#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_TITLE#> (a-zA-Z0-9):</label>
-		 <div class="controls"><input type="text" name="title" value="[#TITLE#]" class="form-control input"></div>
-		</div>
-		<!-- API_URL (varchar) -->
-		<div class="form-group">
-		 <label class="control-label"[#if ERR_API_URL#] style="color:red;font-weight:bold"[#endif#]>
-		 <#LANG_OCT_API_URL#>:
-		 (*)
-		 </label>
-		 <div class="controls"><input type="text" name="api_url" value="[#API_URL#]" class="input"></div>
-		</div>
-		<!-- API_KEY (varchar) -->
-		<div class="form-group">
-		 <label class="control-label"[#if ERR_API_KEY#] style="color:red;font-weight:bold"[#endif#]>
-		  <#LANG_OCT_API_KEY#>:
-		 (*)
-		 </label>
-		 <div class="controls"><input type="text" name="api_key" value="[#API_KEY#]" class="input"></div>
-		</div>
-		<!-- ASK_PERIOD (varchar) -->
-		<div class="form-group">
-		 <label class="control-label"[#if ERR_OCT_ASK_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
-		 <#LANG_OCT_ASK_PERIOD#>:
-		 (*)
-		 </label>
-		 <div class="controls"><input type="text" name="ask_period" value="[#ASK_PERIOD#]" class="input"></div>
-		</div>
-		<!-- HIST_PERIOD (int(10)) -->
-		<div class="form-group">
-		 <label class="control-label"[#if ERR_HIST_PERIOD#] style="color:red;font-weight:bold"[#endif#]>
-		 <#LANG_OCT_HIST_PERIOD#>:
-		 </label>
-		 <div class="controls"><input type="text" name="hist_period" value="[#HIST_PERIOD#]" class="input"></div>
-		</div>
-		<br>
-		
-		<h4><#LANG_OCT_VOICENOTIFICATIONS#></h4>
-		<!-- NIGHTMODE (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_NIGHTMODE#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_NIGHTMODE#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_nightmode" value="1"[#if NTFY_NIGHTMODE="1"#] checked[#endif#]></div>
-		</div>
-
-		<!-- PRINTERON (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTERON#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_PRINTERON#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_printeron" value="1"[#if NTFY_PRINTERON="1"#] checked[#endif#]></div>
-		</div>
-
-		<!-- STARTPRINTING (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_STARTPRINT#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_STARTPRINT#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_startprint" value="1"[#if NTFY_STARTPRINT="1"#] checked[#endif#]></div>
-		</div>
-
-
-		<!-- PERCENTOFPRINT (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_PERCENT#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_PERCENTPRINT#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_percent" value="1"[#if NTFY_PERCENT="1"#] checked[#endif#]></div>
-		</div>
-
-		<label class="control-label"[#if ERR_NTFY_PERCENT_NUM#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_VOICEPERCENT#>:</label>
-		<div class="controls">
-			<select name="ntfy_percent_num" class="form-control input">
-			 [#begin NTFY_PERCENT_NUM_OPTIONS#]
-			 <option value="[#PERCENT#]"[#if SELECTED#] selected[#endif#]>[#TITLE#] %
-			 [#end NTFY_PERCENT_NUM_OPTIONS#]
-			</select>
-		</div>
-
-		<!-- FINISHPRINT (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_FINISHPRINT#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_FINISHPRINT#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_finishprint" value="1"[#if NTFY_FINISHPRINT="1"#] checked[#endif#]></div>
-		</div>
-
-		<!-- PRINTEROFF (varchar) -->
-		<div class="form-group">
-			<label class="col-lg-3 control-label"[#if ERR_NTFY_PRINTEROFF#] style="color:red;font-weight:bold"[#endif#]>
-			<#LANG_OCT_V_PRINTEROFF#>:
-			</label>
-			<div class="controls"><input type="checkbox" name="ntfy_printeroff" value="1"[#if NTFY_PRINTEROFF="1"#] checked[#endif#]></div>
-		</div>
-		
+	<div id="panel_main" class="tab-pane fade in">
+		[#inc oct_main_settings_admin.html#]
 	</div>
-
+	<div id="panel_voice" class="tab-pane fade in">
+		[#inc oct_voice_settings_admin.html#]
+	</div>
+	<div id="panel_kodi" class="tab-pane fade in">
+		[#inc oct_kodi_settings_admin.html#]
+	</div>
 </div>
 
 <div class="form-actions">
@@ -137,7 +39,8 @@
 	 
 </div>
 </fieldset>
-</form>
+</form>		
+
 [#endif OK#]
 
 <script type="text/javascript">

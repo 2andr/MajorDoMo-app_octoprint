@@ -1,0 +1,50 @@
+<br>
+<!-- PRINTERON (varchar) -->
+<div class="form-group">
+	<label class="col-lg-3 control-label"[#if ERR_KODI_PRINTERON#] style="color:red;font-weight:bold"[#endif#]>
+	<#LANG_OCT_V_PRINTERON#>:
+	</label>
+	<div class="controls"><input type="checkbox" name="kodi_printeron" value="1"[#if KODI_PRINTERON="1"#] checked[#endif#]></div>
+</div>
+
+<!-- STARTPRINTING (varchar) -->
+<div class="form-group">
+	<label class="col-lg-3 control-label"[#if ERR_KODI_STARTPRINT#] style="color:red;font-weight:bold"[#endif#]>
+	<#LANG_OCT_V_STARTPRINT#>:
+	</label>
+	<div class="controls"><input type="checkbox" name="kodi_startprint" value="1"[#if KODI_STARTPRINT="1"#] checked[#endif#]></div>
+</div>
+
+
+<!-- PERCENTOFPRINT (varchar) -->
+<div class="form-group">
+	<label class="col-lg-3 control-label"[#if ERR_KODI_PERCENT#] style="color:red;font-weight:bold"[#endif#]>
+	<#LANG_OCT_V_PERCENTPRINT#>:
+	</label>
+	<div class="controls"><input type="checkbox" name="kodi_percent" value="1"[#if KODI_PERCENT="1"#] checked[#endif#]></div>
+</div>
+
+<label class="control-label"[#if ERR_KODI_PERCENT_NUM#] style="color:red;font-weight:bold"[#endif#]><#LANG_OCT_VOICEPERCENT#>:</label>
+<div class="controls">
+	<select name="kodi_percent_num" class="form-control input">
+	 [#begin KODI_PERCENT_NUM_OPTIONS#]
+	 <option value="[#PERCENT#]"[#if SELECTED#] selected[#endif#]>[#TITLE#] %
+	 [#end KODI_PERCENT_NUM_OPTIONS#]
+	</select>
+</div>
+
+<!-- FINISHPRINT (varchar) -->
+<div class="form-group">
+	<label class="control-label"[#if ERR_KODI_FINISHPRINT#] style="color:red;font-weight:bold"[#endif#]>
+	<#LANG_OCT_V_FINISHPRINT#>:
+	</label>
+	<div class="controls"><input type="checkbox" name="kodi_finishprint" value="1"[#if KODI_FINISHPRINT="1"#] checked[#endif#]></div>
+</div>
+
+<!-- PRINTEROFF (varchar) -->
+<div class="form-group">
+	<label class="control-label"[#if ERR_KODI_PRINTEROFF#] style="color:red;font-weight:bold"[#endif#]>
+	<#LANG_OCT_V_PRINTEROFF#>:
+	</label>
+	<div class="controls"><input type="checkbox" name="kodi_printeroff" value="1"[#if KODI_PRINTEROFF="1"#] checked[#endif#]></div>
+</div>
